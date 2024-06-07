@@ -89,7 +89,7 @@ export default {
 		for (let i = populations.length-1; i>=0; i--) {
 			let year = populations[i].Year
 			if (endYear >= year && year >= startYear) {
-				text = text + year + ": " + populations[i].Population + "\n"
+				text = text + `${year} : ${populations[i].Population}\n`
 			}
 		}
 
