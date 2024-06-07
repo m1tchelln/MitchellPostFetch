@@ -79,11 +79,18 @@ export default {
 		const cont = await contentType
 		const res = await result
 		const popObj = JSON.parse(res)
-		// return new Response("Here's a random pulled fact about kitties: " + catObj.fact);
+		
+		const { searchParams } = new URL(request.url)
+		const startYear = parseInt(searchParams.get('startYear')) || 2013
+		const endYear = parseInt(searchParams.get('endYear')) || 2022
+
 		let populations = popObj.data
 		let text = "United States populations over time:\n"
 		for (let i = populations.length-1; i>=0; i--) {
-			text = text + populations[i].Year + ": " + populations[i].Population + "\n"
+			let year = populations[i].Year
+			if (endYear >= year && year >= startYear) {
+				text = text + year + ": " + populations[i].Population + "\n"
+			}
 		}
 
 		return new Response(text);
