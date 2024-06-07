@@ -21,6 +21,7 @@ addEventListener("fetch", event => {
   }
   */
 
+  import template from './template'
 
 export default {
 	async fetch(request, env, ctx) {
@@ -81,19 +82,26 @@ export default {
 		const popObj = JSON.parse(res)
 		
 		const { searchParams } = new URL(request.url)
-		const startYear = parseInt(searchParams.get('startYear')) || 2013
-		const endYear = parseInt(searchParams.get('endYear')) || 2022
+		const startYear = parseInt(searchParams.get('startYear')) || -1
+		const endYear = parseInt(searchParams.get('endYear')) || -1
 
-		let populations = popObj.data
-		let text = "United States populations over time:\n"
-		for (let i = populations.length-1; i>=0; i--) {
-			let year = populations[i].Year
-			if (endYear >= year && year >= startYear) {
-				text = text + `${year} : ${populations[i].Population}\n`
+		if (startYear != -1 && endYear != -1) {
+
+			let populations = popObj.data
+			let text = "United States populations over time:\n"
+			for (let i = populations.length-1; i>=0; i--) {
+				let year = populations[i].Year
+				if (endYear >= year && year >= startYear) {
+					text = text + `${year} : ${populations[i].Population}\n`
+				}
 			}
+
+			return new Response(text);
 		}
 
-		return new Response(text);
+		return new Response(template(request.cf), {
+			headers: {'content-type': 'text/html' },
+		});
 	
 	
 		/*
